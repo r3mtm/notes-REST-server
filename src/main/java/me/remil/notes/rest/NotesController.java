@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import me.remil.notes.dto.NoteTitles;
 import me.remil.notes.entity.Notes;
+import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
 import me.remil.notes.service.NoteService;
 
@@ -34,15 +35,21 @@ public class NotesController {
 		this.noteService = noteService;
 	}
 	
-	@GetMapping("/notes")
-	public List<NoteTitles> fetchAllNotesTitle(@RequestHeader("Authorization") String token) {
+	@GetMapping("/notes/page/{page}")
+	public List<NoteTitles> fetchTenNoteTitles(@PathVariable String page, @RequestHeader("Authorization") String token) {
 		
 		// If there is no proper bearer token then this won't be executed
 		token = token.substring(7, token.length()); 
+		int pageNumber;
+		try {
+			pageNumber = Integer.parseInt(page);
+		} catch(NumberFormatException e) {
+			throw new BadParameterException("Page parameter should be a number. Given string!");
+		}
 		
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		
-		return noteService.fetchAllNotesTitle(username);
+		return noteService.fetchTenNoteTitles(username, pageNumber);
 	}
 	
 	@GetMapping("/notes/{id}")

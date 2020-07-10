@@ -2,6 +2,7 @@ package me.remil.notes.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -19,17 +20,23 @@ public class NoteDAOImpl implements NotesDAO {
 	
 	private EntityManager entityManager;
 	
+	private int ROWS_COUNT = 10;
+	
 	@Autowired
 	public NoteDAOImpl(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
 	@Override
-	public List<NoteTitles> fetchAllNotesTitle(String username) {
+	public List<NoteTitles> fetchTenNoteTitles(String username, int pageNumber) {
+		
+		pageNumber = pageNumber - 1;
 		
 		Query query = entityManager.createQuery
 				("select n.noteId, n.noteHeading from Notes n where userId=:userId order by lastUpdated desc");
 		query.setParameter("userId", username);
+		query.setFirstResult(pageNumber * ROWS_COUNT);
+		query.setMaxResults(ROWS_COUNT);
 		
 		List<Object[]> results = query.getResultList();
 		List<NoteTitles> notes = new ArrayList<>();

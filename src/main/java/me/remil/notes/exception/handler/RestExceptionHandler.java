@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import me.remil.notes.entity.ErrorResponse;
+import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.exception.NotFoundException;
 import me.remil.notes.exception.UnauthorizedRequestException;
 
@@ -69,5 +70,16 @@ public class RestExceptionHandler {
 		errorResponse.setMessage(e.getMessage());
 		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(BadParameterException.class)
+	public ResponseEntity<ErrorResponse> handleException(BadParameterException e) {
+		ErrorResponse errorResponse = new ErrorResponse();
+		
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		errorResponse.setMessage(e.getMessage());
+		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+		
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 }

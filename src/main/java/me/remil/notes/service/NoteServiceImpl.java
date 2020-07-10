@@ -22,8 +22,8 @@ public class NoteServiceImpl implements NoteService {
 
 	@Override
 	@Transactional
-	public List<NoteTitles> fetchAllNotesTitle(String username) {
-		return notesDAO.fetchAllNotesTitle(username);
+	public List<NoteTitles> fetchTenNoteTitles(String username, int pageNumber) {
+		return notesDAO.fetchTenNoteTitles(username, pageNumber);
 	}
 
 	@Override
