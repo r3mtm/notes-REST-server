@@ -35,21 +35,21 @@ public class NotesController {
 		this.noteService = noteService;
 	}
 	
-	@GetMapping("/notes/page/{page}")
-	public List<NoteTitles> fetchTenNoteTitles(@PathVariable String page, @RequestHeader("Authorization") String token) {
+	@GetMapping("/notes/page/{record}")
+	public List<NoteTitles> fetchTenNoteTitles(@PathVariable String record, @RequestHeader("Authorization") String token) {
 		
 		// If there is no proper bearer token then this won't be executed
 		token = token.substring(7, token.length()); 
-		int pageNumber;
+		int recordNumber;
 		try {
-			pageNumber = Integer.parseInt(page);
+			recordNumber = Integer.parseInt(record);
 		} catch(NumberFormatException e) {
 			throw new BadParameterException("Page parameter should be a number. Given string!");
 		}
 		
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		
-		return noteService.fetchTenNoteTitles(username, pageNumber);
+		return noteService.fetchTenNoteTitles(username, recordNumber);
 	}
 	
 	@GetMapping("/notes/{id}")

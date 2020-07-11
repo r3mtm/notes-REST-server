@@ -28,16 +28,14 @@ public class NoteDAOImpl implements NotesDAO {
 	}
 
 	@Override
-	public List<NoteTitles> fetchTenNoteTitles(String username, int pageNumber) {
-		
-		pageNumber = pageNumber - 1;
-		
+	public List<NoteTitles> fetchTenNoteTitles(String username, int recordNumber) {
 		Query query = entityManager.createQuery
 				("select n.noteId, n.noteHeading from Notes n where userId=:userId order by lastUpdated desc");
 		query.setParameter("userId", username);
-		query.setFirstResult(pageNumber * ROWS_COUNT);
+		query.setFirstResult(recordNumber);
 		query.setMaxResults(ROWS_COUNT);
 		
+		@SuppressWarnings("unchecked")
 		List<Object[]> results = query.getResultList();
 		List<NoteTitles> notes = new ArrayList<>();
 		
