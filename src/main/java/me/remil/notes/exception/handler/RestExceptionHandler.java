@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import me.remil.notes.entity.ErrorResponse;
 import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.exception.NotFoundException;
@@ -54,6 +55,7 @@ public class RestExceptionHandler {
 	
 	@ExceptionHandler(ExpiredJwtException.class)
 	public ResponseEntity<ErrorResponse> handleException(ExpiredJwtException e) {
+		
 		ErrorResponse errorResponse = new ErrorResponse();
 		
 		errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -74,6 +76,7 @@ public class RestExceptionHandler {
 	
 	@ExceptionHandler(BadParameterException.class)
 	public ResponseEntity<ErrorResponse> handleException(BadParameterException e) {
+		
 		ErrorResponse errorResponse = new ErrorResponse();
 		
 		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -81,5 +84,17 @@ public class RestExceptionHandler {
 		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(SignatureException.class)
+	public ResponseEntity<ErrorResponse> handleException(SignatureException e) {
+		
+		ErrorResponse errorResponse = new ErrorResponse();
+		
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		errorResponse.setMessage("Invalid or Malformed Token");
+		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+		
+		return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 }
