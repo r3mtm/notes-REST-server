@@ -20,20 +20,18 @@ public class NoteDAOImpl implements NotesDAO {
 	
 	private EntityManager entityManager;
 	
-	private int ROWS_COUNT = 10;
-	
 	@Autowired
 	public NoteDAOImpl(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
 	@Override
-	public List<NoteTitles> fetchTenNoteTitles(String username, int recordNumber) {
+	public List<NoteTitles> fetchNoteTitles(String username, int recordNumber, int recordCount) {
 		Query query = entityManager.createQuery
 				("select n.noteId, n.noteHeading from Notes n where userId=:userId order by lastUpdated desc");
 		query.setParameter("userId", username);
 		query.setFirstResult(recordNumber);
-		query.setMaxResults(ROWS_COUNT);
+		query.setMaxResults(recordCount);
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> results = query.getResultList();

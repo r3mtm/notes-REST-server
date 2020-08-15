@@ -6,7 +6,7 @@ import me.remil.notes.dto.NoteTitles;
 import me.remil.notes.entity.Notes;
 
 public interface NotesDAO {
-	public List<NoteTitles> fetchTenNoteTitles(String username, int recordNumber);
+	public List<NoteTitles> fetchNoteTitles(String username, int recordNumber, int recordCount);
 	
 	public Notes fetchById(String id);
 	
