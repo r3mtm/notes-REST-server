@@ -2,6 +2,7 @@ package me.remil.notes.rest;
 
 import java.util.List;
 
+import me.remil.notes.service.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,28 +19,26 @@ import me.remil.notes.dto.NoteTitles;
 import me.remil.notes.entity.Notes;
 import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
-import me.remil.notes.service.NoteService;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
 @RequestMapping("/api")
 public class NotesController {
 
-	private NoteService noteService;
-	
+	final private NotesService notesService;
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	@Autowired
-	public NotesController(NoteService noteService) {
-		this.noteService = noteService;
+	public NotesController(NotesService notesService) {
+		this.notesService = notesService;
 	}
 	
 	@GetMapping("/notes/page/{record}/{count}")
 	public List<NoteTitles> fetchNoteTitles(@PathVariable String record, @PathVariable String count, @RequestHeader("Authorization") String token) {
-		
-		// If there is no proper bearer token then this won't be executed
-		token = token.substring(7, token.length()); 
+
+		token = token.substring(7);
 		int recordNumber, recordCount;
 		try {
 			recordNumber = Integer.parseInt(record);
@@ -50,28 +49,28 @@ public class NotesController {
 		
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		
-		return noteService.fetchNoteTitles(username, recordNumber, recordCount);
+		return notesService.fetchNoteTitles(username, recordNumber, recordCount);
 	}
 	
 	@GetMapping("/notes/{id}")
 	public Notes fetchById(@PathVariable String id) {
-		return noteService.fetchNoteById(id);
+		return notesService.fetchNoteById(id);
 	}
-	
+
 	@PostMapping("/notes")
 	public void saveNote(@RequestBody Notes note) {
-		noteService.saveNote(note);
+		notesService.saveNote(note);
 	}
-	
+
 	@PutMapping("/notes")
 	public void updateNote(@RequestHeader("Authorization") String token, @RequestBody Notes note) {
-		token = token.substring(7, token.length());
+		token = token.substring(7);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
-		noteService.updateNote(note, username);
+		notesService.updateNote(note, username);
 	}
-	
+
 	@DeleteMapping("/notes/{id}")
 	public void deleteNote(@PathVariable String id) {
-		noteService.delete(id);
+		notesService.deleteNote(id);
 	}
 }

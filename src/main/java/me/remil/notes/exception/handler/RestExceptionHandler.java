@@ -2,7 +2,9 @@ package me.remil.notes.exception.handler;
 
 import java.sql.Timestamp;
 
+import me.remil.notes.exception.IdAlreadyExistsException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -95,6 +97,28 @@ public class RestExceptionHandler {
 		errorResponse.setMessage("Invalid or Malformed Token");
 		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		
-		return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(IdAlreadyExistsException.class)
+	public ResponseEntity<ErrorResponse> handleException(IdAlreadyExistsException e) {
+		ErrorResponse errorResponse = new ErrorResponse();
+
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		errorResponse.setMessage(e.getMessage());
+		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<ErrorResponse> handleException(EmptyResultDataAccessException e) {
+		ErrorResponse errorResponse = new ErrorResponse();
+
+		errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+		errorResponse.setMessage("No record exists");
+		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 }

@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "notes")
@@ -23,11 +24,11 @@ public class Notes {
 	private String userId; // username
 	
 	@Column(name = "last_updated")
-	private long lastUpdated;
+	private Timestamp lastUpdated;
 	
 	public Notes() {}
 	
-	public Notes(String noteId, String noteHeading, String noteBody, String userId, long lastUpdated) {
+	public Notes(String noteId, String noteHeading, String noteBody, String userId, Timestamp lastUpdated) {
 		this.noteId = noteId;
 		this.noteHeading = noteHeading;
 		this.noteBody = noteBody;
@@ -67,11 +68,11 @@ public class Notes {
 		this.userId = userId;
 	}
 
-	public long getLastUpdated() {
+	public Timestamp getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(long lastUpdated) {
+	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 }
