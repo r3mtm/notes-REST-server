@@ -1,4 +1,4 @@
-package me.remil.notes.rest;
+package me.remil.notes.controller;
 
 import java.util.Objects;
 

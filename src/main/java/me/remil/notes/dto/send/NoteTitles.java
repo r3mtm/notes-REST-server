@@ -1,4 +1,4 @@
-package me.remil.notes.dto;
+package me.remil.notes.dto.send;
 
 import javax.persistence.EntityResult;
 import javax.persistence.FieldResult;

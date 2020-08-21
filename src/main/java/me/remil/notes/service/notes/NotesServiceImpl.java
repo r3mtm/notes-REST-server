@@ -1,7 +1,7 @@
-package me.remil.notes.service;
+package me.remil.notes.service.notes;
 
 import me.remil.notes.dao.NotesRepository;
-import me.remil.notes.dto.NoteTitles;
+import me.remil.notes.dto.send.NoteTitles;
 import me.remil.notes.entity.Notes;
 import me.remil.notes.exception.IdAlreadyExistsException;
 import me.remil.notes.exception.NotFoundException;

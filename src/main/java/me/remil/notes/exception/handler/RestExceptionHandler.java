@@ -2,7 +2,7 @@ package me.remil.notes.exception.handler;
 
 import java.sql.Timestamp;
 
-import me.remil.notes.exception.IdAlreadyExistsException;
+import me.remil.notes.exception.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import me.remil.notes.entity.ErrorResponse;
-import me.remil.notes.exception.BadParameterException;
-import me.remil.notes.exception.NotFoundException;
-import me.remil.notes.exception.UnauthorizedRequestException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -120,5 +117,16 @@ public class RestExceptionHandler {
 		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(MissingItemException.class)
+	public ResponseEntity<ErrorResponse> handleException(MissingItemException e) {
+		ErrorResponse errorResponse = new ErrorResponse();
+
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		errorResponse.setMessage(e.getMessage());
+		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 }

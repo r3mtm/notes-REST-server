@@ -1,6 +1,6 @@
-package me.remil.notes.service;
+package me.remil.notes.service.notes;
 
-import me.remil.notes.dto.NoteTitles;
+import me.remil.notes.dto.send.NoteTitles;
 import me.remil.notes.entity.Notes;
 
 import java.util.List;

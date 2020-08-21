@@ -1,8 +1,8 @@
-package me.remil.notes.rest;
+package me.remil.notes.controller;
 
 import java.util.List;
 
-import me.remil.notes.service.NotesService;
+import me.remil.notes.service.notes.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import me.remil.notes.dto.NoteTitles;
+import me.remil.notes.dto.send.NoteTitles;
 import me.remil.notes.entity.Notes;
 import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
