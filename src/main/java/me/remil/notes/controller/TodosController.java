@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
 @RequestMapping("/api")
 public class TodosController {
-    private TodosService todosService;
 
-    @Autowired
+    final private TodosService todosService;
+
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
@@ -39,5 +39,10 @@ public class TodosController {
         token = token.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.deleteTodo(todoId, username);
+    }
+
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 }

@@ -27,7 +27,6 @@ public class NotesController {
 
 	final private NotesService notesService;
 
-	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
@@ -72,5 +71,10 @@ public class NotesController {
 	@DeleteMapping("/notes/{id}")
 	public void deleteNote(@PathVariable String id) {
 		notesService.deleteNote(id);
+	}
+
+	@Autowired
+	public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+		this.jwtTokenUtil = jwtTokenUtil;
 	}
 }

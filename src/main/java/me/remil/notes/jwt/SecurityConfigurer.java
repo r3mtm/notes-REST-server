@@ -25,11 +25,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsService jwtUserDetailsService;
-	
-	@Autowired
 	private JwtAuthenticationEntryPoint JwtAuthenticationEntryPoint;
-	
-	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
 	@Autowired
@@ -62,5 +58,15 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors(); // To allow CORS preflight requests.
 		
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Autowired
+	public void setJwtAuthenticationEntryPoint(me.remil.notes.jwt.util.JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+		JwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+	}
+
+	@Autowired
+	public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+		this.jwtRequestFilter = jwtRequestFilter;
 	}
 }

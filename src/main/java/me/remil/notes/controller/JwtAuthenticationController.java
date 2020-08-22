@@ -3,6 +3,7 @@ package me.remil.notes.controller;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -22,20 +23,14 @@ import me.remil.notes.jwt.util.JwtTokenUtil;
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
 public class JwtAuthenticationController {
-	
-	@Autowired
+
 	private AuthenticationManager authenticationManager;
-	
-	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-	@Autowired
 	private UserDetailsService userDetailsService;
 	
 //	@Autowired
 //	private UserDAO userDAO;
-	
-	
+
 	@PostMapping("/api/authenticate")
 	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
@@ -61,5 +56,21 @@ public class JwtAuthenticationController {
 		/*
 		 * BadCredentialsException is handled by custom exception handler
 		 */
+	}
+
+	@Autowired
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
+
+	@Autowired
+	public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+		this.jwtTokenUtil = jwtTokenUtil;
+	}
+
+	@Autowired
+	@Qualifier("jwtUserDetailsService")
+	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
 	}
 }

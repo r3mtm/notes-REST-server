@@ -15,7 +15,6 @@ import me.remil.notes.jwt.entity.Users;
 @Service
 public class JwtUserDetailsService implements UserDetailsService{
 
-	@Autowired
 	private UserDAO userDAO;
 	
 	@Override
@@ -28,6 +27,9 @@ public class JwtUserDetailsService implements UserDetailsService{
 		
 		return new User(user.getUsername(), user.getPassword(), new ArrayList<>());
 	}
-	
-	
+
+	@Autowired
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 }
