@@ -26,59 +26,36 @@ public class TodosServiceImpl implements TodosService {
     }
 
     @Override
-    public void saveTodos(TodosDTO todosDto, String usernameFromToken) {
-        String todoId = todosDto.getTodoId();
-        String title = todosDto.getTodoTitle();
-        String username = todosDto.getUsername();
-        Timestamp lastUpdated = todosDto.getLastUpdated();
-        List<TodoItemDTO> todoItems = todosDto.getTodoItems();
-
-        if (username == null) {
-            throw new MissingItemException("Username missing in request");
-        } else if (!username.equals(usernameFromToken)) {
-            throw new UnauthorizedRequestException("UNAUTHORIZED: Request cannot be fulfilled");
-        }
-
-        if (todoId == null || todoId.trim().length() == 0) {
-            throw new MissingItemException("Todo id is missing.");
-        }
-        if (title == null || title.trim().length() == 0) {
-            throw new MissingItemException("Missing title for todo");
-        }
-        if(lastUpdated == null) {
-            throw new MissingItemException("Missing last updated time");
-        }
-        if (todoItems.size() == 0) {
-            throw new MissingItemException("No todos found");
-        }
-
-        if (todosRepository.existsByTodoId(todoId)) {
-            throw new IdAlreadyExistsException("Todo with id "+todoId + " already exists in database");
-        }
-
-        Set<Integer> checkingIndexes = new HashSet<>();
-        Todos todos = new Todos();
-        todos.setTodoId(todoId);
-        todos.setTitle(title);
-        todos.setUsername(username);
-        todos.setLastUpdated(lastUpdated);
-        todosDto.getTodoItems().forEach(todoItemDTO -> {
-            checkingIndexes.add(todoItemDTO.getTodoIndex());
-            TodoItem todoItem = new TodoItem(todoId, todoItemDTO.getTodoIndex(), todoItemDTO.getTodoItem(), todos);
-            todos.addTodoItems(todoItem);
-        });
-
-        for (int index = 0; index < todoItems.size(); ++index) {
-            if(!checkingIndexes.contains(index)) {
-                throw new BadParameterException("Malformed request");
-            }
-        }
-
+    public void saveTodos(Todos todos) {
         todosRepository.save(todos);
     }
 
     @Override
-    public void updateTodos(TodosDTO todosDto, String usernameFromToken) {
+    public void updateTodos(Todos todos, String usernameFromToken) {
+        String usernameFromDb = todosRepository.fetchUserNameByTodoId(todos.getTodoId());
+        if(!usernameFromDb.equals(usernameFromToken)) {
+            throw new UnauthorizedRequestException("UNAUTHORIZED: Request cannot be fulfilled");
+        }
+        todosRepository.save(todos);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTodo(String todoId, String usernameFromToken) {
+        String username = todosRepository.fetchUserNameByTodoId(todoId);
+
+        if (username == null) {
+            throw new NotFoundException("Request failed. No Todo with id "+todoId+" exist for the user");
+        }
+
+        if (!username.equals(usernameFromToken)) {
+            throw new UnauthorizedRequestException("UNAUTHORIZED: Request cannot be fulfilled");
+        }
+        todosRepository.deleteByTodoId(todoId);
+    }
+
+    @Override
+    public void validateBeforeSaveOrUpdate(TodosDTO todosDto, String usernameFromToken, ACTIONS type) {
         String todoId = todosDto.getTodoId();
         String title = todosDto.getTodoTitle();
         String username = todosDto.getUsername();
@@ -104,14 +81,6 @@ public class TodosServiceImpl implements TodosService {
             throw new MissingItemException("No todos found");
         }
 
-        if (todosRepository.existsByTodoId(todoId)) {
-            if (!username.equals(todosRepository.fetchUserNameByTodoId(todoId))) {
-                throw new UnauthorizedRequestException("Unauthorized: Request cannot be fulfilled");
-            }
-        } else {
-            throw new MissingItemException("Todo with id "+ todoId + " not found");
-        }
-
         Set<Integer> checkingIndexes = new HashSet<>();
         Todos todos = new Todos();
         todos.setTodoId(todoId);
@@ -124,29 +93,24 @@ public class TodosServiceImpl implements TodosService {
             todos.addTodoItems(todoItem);
         });
 
-        /*
-            Checking if todo items has indexes from 0 to size-1
-         */
+        // Checking if todo items has indexes from 0 to size-1
         for (int index = 0; index < todoItems.size(); ++index) {
             if(!checkingIndexes.contains(index)) {
                 throw new BadParameterException("Malformed request");
             }
         }
-        todosRepository.save(todos);
-    }
 
-    @Override
-    @Transactional
-    public void deleteTodo(String todoId, String usernameFromToken) {
-        String username = todosRepository.fetchUserNameByTodoId(todoId);
+        boolean todoExists = todosRepository.existsByTodoId(todoId);
 
-        if (username == null) {
-            throw new NotFoundException("Request failed. No Todo with id "+todoId+" exist for the user");
+        if (type.equals(ACTIONS.SAVE)) {
+            if (todoExists) {
+                throw new IdAlreadyExistsException("Note with id "+todoId+" already exists");
+            }
+            saveTodos(todos);
+        } else if (!todoExists) {
+            throw new NotFoundException("No todo found with id "+todoId);
+        } else {
+            updateTodos(todos, usernameFromToken);
         }
-
-        if (!username.equals(usernameFromToken)) {
-            throw new UnauthorizedRequestException("UNAUTHORIZED: Request cannot be fulfilled");
-        }
-        todosRepository.deleteByTodoId(todoId);
     }
 }

@@ -116,7 +116,8 @@ public class NotesServiceImpl implements NotesService {
             saveNote(note);
         } else if (!noteExists) {
             throw new NotFoundException("No note found with id "+noteId);
+        } else {
+            updateNote(note, usernameFromToken);
         }
-        updateNote(note, usernameFromToken);
     }
 }

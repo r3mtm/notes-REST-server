@@ -24,14 +24,14 @@ public class TodosController {
     public void saveTodo(@RequestHeader("Authorization") String token, @RequestBody TodosDTO todos) {
         token = token.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        todosService.saveTodos(todos, username);
+        todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.SAVE);
     }
 
     @PutMapping("/todos")
     public void updateTodo(@RequestHeader("Authorization") String token, @RequestBody TodosDTO todos) {
         token = token.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        todosService.updateTodos(todos, username);
+        todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.UPDATE);
     }
 
     @DeleteMapping("/todos/{todoId}")
