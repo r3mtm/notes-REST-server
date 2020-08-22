@@ -43,7 +43,7 @@ public class NotesController {
 			recordNumber = Integer.parseInt(record);
 			recordCount = Integer.parseInt(count);
 		} catch(NumberFormatException e) {
-			throw new BadParameterException("Page parameter should be a number. Given string!");
+			throw new BadParameterException("Record number must be a number. Given string!");
 		}
 		
 		String username = jwtTokenUtil.getUsernameFromToken(token);
@@ -52,25 +52,31 @@ public class NotesController {
 	}
 	
 	@GetMapping("/notes/{id}")
-	public Notes fetchById(@PathVariable String id) {
-		return notesService.fetchNoteById(id);
+	public Notes fetchById(@RequestHeader("Authorization") String token, @PathVariable String id) {
+		token = token.substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		return notesService.fetchNoteById(id, username);
 	}
 
 	@PostMapping("/notes")
-	public void saveNote(@RequestBody Notes note) {
-		notesService.saveNote(note);
+	public void saveNote(@RequestHeader("Authorization") String token, @RequestBody Notes note) {
+		token = token.substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		notesService.validateBeforeSaveOrUpdate(note, username, NotesService.ACTIONS.SAVE);
 	}
 
 	@PutMapping("/notes")
 	public void updateNote(@RequestHeader("Authorization") String token, @RequestBody Notes note) {
 		token = token.substring(7);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
-		notesService.updateNote(note, username);
+		notesService.validateBeforeSaveOrUpdate(note, username, NotesService.ACTIONS.UPDATE);
 	}
 
 	@DeleteMapping("/notes/{id}")
-	public void deleteNote(@PathVariable String id) {
-		notesService.deleteNote(id);
+	public void deleteNote(@RequestHeader("Authorization") String token, @PathVariable String id) {
+		token = token.substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		notesService.deleteNote(id, username);
 	}
 
 	@Autowired

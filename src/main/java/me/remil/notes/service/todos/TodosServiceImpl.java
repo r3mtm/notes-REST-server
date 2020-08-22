@@ -43,7 +43,7 @@ public class TodosServiceImpl implements TodosService {
             throw new MissingItemException("Todo id is missing.");
         }
         if (title == null || title.trim().length() == 0) {
-            throw new MissingItemException("Missing title from todo");
+            throw new MissingItemException("Missing title for todo");
         }
         if(lastUpdated == null) {
             throw new MissingItemException("Missing last updated time");
