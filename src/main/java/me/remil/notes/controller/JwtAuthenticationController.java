@@ -27,9 +27,6 @@ public class JwtAuthenticationController {
 	private AuthenticationManager authenticationManager;
 	private JwtTokenUtil jwtTokenUtil;
 	private UserDetailsService userDetailsService;
-	
-//	@Autowired
-//	private UserDAO userDAO;
 
 	@PostMapping("/api/authenticate")
 	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
@@ -39,7 +36,6 @@ public class JwtAuthenticationController {
 		
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		final long expiresOn = jwtTokenUtil.getExpirationDateFromToken(token).getTime() / 1000;
-//		final long userId = userDAO.findByUsername(authenticationRequest.getUsername()).getId();
 		
 		return ResponseEntity.ok(new JwtResponse(token, expiresOn, authenticationRequest.getUsername()));
 	}

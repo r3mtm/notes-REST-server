@@ -77,31 +77,32 @@ public class TodosServiceImpl implements TodosService {
         if(lastUpdated == null) {
             throw new MissingItemException("Missing last updated time");
         }
-        if (todoItems.size() == 0) {
+        if (todoItems == null || todoItems.size() == 0) {
             throw new MissingItemException("No todos found");
         }
 
-        Set<Integer> checkingIndexes = new HashSet<>();
+        Set<Integer> checkIndex = new HashSet<>();
         Todos todos = new Todos();
         todos.setTodoId(todoId);
         todos.setTitle(title);
         todos.setUsername(username);
         todos.setLastUpdated(lastUpdated);
         todosDto.getTodoItems().forEach(todoItemDTO -> {
-            checkingIndexes.add(todoItemDTO.getTodoIndex());
-            TodoItem todoItem = new TodoItem(todoId, todoItemDTO.getTodoIndex(), todoItemDTO.getTodoItem(), todos);
+            checkIndex.add(todoItemDTO.getTodoIndex());
+            if (todoItemDTO.getTodoItem() == null) {
+                throw new MissingItemException("Missing essential fields in todo item");
+            }
+            TodoItem todoItem = new TodoItem(todoId, todoItemDTO.getTodoIndex(), todoItemDTO.getTodoItem(), todoItemDTO.isStrike(), todos);
             todos.addTodoItems(todoItem);
         });
 
         // Checking if todo items has indexes from 0 to size-1
         for (int index = 0; index < todoItems.size(); ++index) {
-            if(!checkingIndexes.contains(index)) {
+            if(!checkIndex.contains(index)) {
                 throw new BadParameterException("Malformed request");
             }
         }
-
         boolean todoExists = todosRepository.existsByTodoId(todoId);
-
         if (type.equals(ACTIONS.SAVE)) {
             if (todoExists) {
                 throw new IdAlreadyExistsException("Note with id "+todoId+" already exists");

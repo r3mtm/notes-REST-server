@@ -20,11 +20,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter{
-	
-	@Autowired
+
 	private UserDetailsService jwtUserDetailsService;
-	
-	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
 	@Override
@@ -39,12 +36,10 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 			} catch(IllegalArgumentException e) {
-//				System.out.println("Unable to get JWT Token");
 				throw new IllegalArgumentException("Invalid token");
 			}
 		} else {
 			logger.warn("JWT Token doesn't begin with Bearer string");
-			throw new IllegalArgumentException("JWT Token doesn't begin with Bearer string");
 		}
 		
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -55,11 +50,20 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
 		chain.doFilter(request, response);
+	}
+
+	@Autowired
+	public void setJwtUserDetailsService(UserDetailsService jwtUserDetailsService) {
+		this.jwtUserDetailsService = jwtUserDetailsService;
+	}
+
+	@Autowired
+	public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+		this.jwtTokenUtil = jwtTokenUtil;
 	}
 }
 

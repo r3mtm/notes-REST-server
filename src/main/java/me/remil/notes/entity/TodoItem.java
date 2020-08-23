@@ -20,6 +20,8 @@ public class TodoItem implements Serializable {
     @Column(name = "todo_item", nullable = false)
     private String todoItem;
 
+    private boolean strike;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", referencedColumnName = "todo_id", insertable = false, updatable = false)
     private Todos todo;
@@ -27,10 +29,11 @@ public class TodoItem implements Serializable {
     public TodoItem() {
     }
 
-    public TodoItem(String todoId, int todoIndex, String todoItem, Todos todo) {
+    public TodoItem(String todoId, int todoIndex, String todoItem, boolean strike, Todos todo) {
         this.todoId = todoId;
         this.todoIndex = todoIndex;
         this.todoItem = todoItem;
+        this.strike = strike;
         this.todo = todo;
     }
 
@@ -58,11 +61,29 @@ public class TodoItem implements Serializable {
         this.todoItem = todoItem;
     }
 
+    public boolean isStrike() {
+        return strike;
+    }
+
+    public void setStrike(boolean strike) {
+        this.strike = strike;
+    }
+
     public Todos getTodo() {
         return todo;
     }
 
     public void setTodo(Todos todo) {
         this.todo = todo;
+    }
+
+    @Override
+    public String toString() {
+        return "TodoItem{" +
+                "todoId='" + todoId + '\'' +
+                ", todoIndex=" + todoIndex +
+                ", todoItem='" + todoItem + '\'' +
+                ", strike=" + strike +
+                '}';
     }
 }
