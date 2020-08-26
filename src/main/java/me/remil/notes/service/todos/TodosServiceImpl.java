@@ -3,14 +3,19 @@ package me.remil.notes.service.todos;
 import me.remil.notes.dao.TodosRepository;
 import me.remil.notes.dto.receive.TodosDTO;
 import me.remil.notes.dto.receive.TodoItemDTO;
+import me.remil.notes.dto.send.TodoTitleDto;
 import me.remil.notes.entity.TodoItem;
 import me.remil.notes.entity.Todos;
 import me.remil.notes.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,5 +118,16 @@ public class TodosServiceImpl implements TodosService {
         } else {
             updateTodos(todos, usernameFromToken);
         }
+    }
+
+    @Override
+    public List<TodoTitleDto> fetchTodoTitles(String username, int recordNumber, int recordCount) {
+        Pageable pageable = PageRequest.of(recordNumber, recordCount, Sort.by(Sort.Direction.DESC, "lastUpdated"));
+        List<Object[]> titles = todosRepository.fetchNoteIdAndTitles(username, pageable);
+        List<TodoTitleDto> todoTitles = new ArrayList<>();
+        titles.forEach(object -> {
+            todoTitles.add(new TodoTitleDto((String)object[0], (String)object[1]));
+        });
+        return todoTitles;
     }
 }

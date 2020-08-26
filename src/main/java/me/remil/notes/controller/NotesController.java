@@ -35,19 +35,19 @@ public class NotesController {
 	}
 	
 	@GetMapping("/notes/page/{record}/{count}")
-	public List<NoteTitles> fetchNoteTitles(@PathVariable String record, @PathVariable String count, @RequestHeader("Authorization") String token) {
-
+	public List<NoteTitles> fetchNoteTitles(@PathVariable String record,
+											@PathVariable String count,
+											@RequestHeader("Authorization")
+														String token) {
 		token = token.substring(7);
 		int recordNumber, recordCount;
 		try {
 			recordNumber = Integer.parseInt(record);
 			recordCount = Integer.parseInt(count);
 		} catch(NumberFormatException e) {
-			throw new BadParameterException("Record number must be a number. Given string!");
+			throw new BadParameterException("Record number and count must be a number.");
 		}
-		
 		String username = jwtTokenUtil.getUsernameFromToken(token);
-		
 		return notesService.fetchNoteTitles(username, recordNumber, recordCount);
 	}
 	
