@@ -4,6 +4,7 @@ import me.remil.notes.dao.NotesRepository;
 import me.remil.notes.dto.send.NoteTitles;
 import me.remil.notes.entity.Notes;
 import me.remil.notes.exception.*;
+import me.remil.notes.service.OffsetBasedPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +26,8 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public List<NoteTitles> fetchNoteTitles(String username, int titleNumber, int titleCount) {
-        int pageNumber;
-        try {
-            pageNumber = titleNumber / titleCount;
-        } catch(NumberFormatException e) {
-            throw new BadParameterException("Invalid request received");
-        }
-        Pageable pageable = PageRequest.of(pageNumber, titleCount, Sort.by(Sort.Direction.DESC, "lastUpdated"));
+    public List<NoteTitles> fetchNoteTitles(String username, int titleOffset, int titleLimit) {
+        Pageable pageable = new OffsetBasedPageRequest(titleLimit, titleOffset);
         List<Object[]> titles = notesRepository.fetchAllTitleAndIdByUserId(username, pageable);
         List<NoteTitles> noteTitles = new ArrayList<>();
 

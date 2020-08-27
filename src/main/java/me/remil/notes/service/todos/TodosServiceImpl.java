@@ -7,6 +7,7 @@ import me.remil.notes.dto.send.TodoTitleDto;
 import me.remil.notes.entity.TodoItem;
 import me.remil.notes.entity.Todos;
 import me.remil.notes.exception.*;
+import me.remil.notes.service.OffsetBasedPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -122,15 +123,7 @@ public class TodosServiceImpl implements TodosService {
 
     @Override
     public List<TodoTitleDto> fetchTodoTitles(String username, int recordNumber, int recordCount) {
-        int pageNumber;
-        try {
-            pageNumber = recordNumber / recordCount;
-        } catch(NumberFormatException e) {
-            throw new BadParameterException("Invalid request received");
-        }
-        Pageable pageable =
-                PageRequest.of(pageNumber, recordCount,
-                        Sort.by(Sort.Direction.DESC, "lastUpdated"));
+        Pageable pageable = new OffsetBasedPageRequest(recordCount, recordNumber);
         List<Object[]> titles = todosRepository.fetchNoteIdAndTitles(username, pageable);
         List<TodoTitleDto> todoTitles = new ArrayList<>();
         titles.forEach(object -> {
