@@ -21,7 +21,8 @@ import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
+@CrossOrigin
 @RequestMapping("/api")
 public class NotesController {
 

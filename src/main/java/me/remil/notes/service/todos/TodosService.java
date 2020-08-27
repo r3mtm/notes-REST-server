@@ -18,4 +18,6 @@ public interface TodosService {
     void validateBeforeSaveOrUpdate(TodosDTO todosDTO, String usernameFromToken, ACTIONS type);
 
     List<TodoTitleDto> fetchTodoTitles(String username, int recordNumber, int recordCount);
+
+    TodosDTO fetchById(String noteId, String username);
 }

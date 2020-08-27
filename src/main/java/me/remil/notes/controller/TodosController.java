@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
+@CrossOrigin
 @RequestMapping("/api")
 public class TodosController {
 
@@ -50,6 +51,13 @@ public class TodosController {
         return todosService.fetchTodoTitles(username, recordNumber, recordCount);
     }
 
+    @GetMapping("/todos/{todoId}")
+    public TodosDTO fetchById(@RequestHeader("Authorization")String token, @PathVariable String todoId) {
+        token = token.substring(7);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        return todosService.fetchById(todoId, username);
+    }
+
     @PutMapping("/todos")
     public void updateTodo(@RequestHeader("Authorization") String token, @RequestBody TodosDTO todos) {
         token = token.substring(7);
@@ -58,7 +66,7 @@ public class TodosController {
     }
 
     @DeleteMapping("/todos/{todoId}")
-    public void delteTodoById(@RequestHeader("Authorization") String token, @PathVariable String todoId) {
+    public void deleteTodoById(@RequestHeader("Authorization") String token, @PathVariable String todoId) {
         token = token.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.deleteTodo(todoId, username);

@@ -89,7 +89,7 @@ public class TodosServiceImpl implements TodosService {
         Set<Integer> checkIndex = new HashSet<>();
         Todos todos = new Todos();
         todos.setTodoId(todoId);
-        todos.setTitle(title);
+        todos.setTodoTitle(title);
         todos.setUsername(username);
         todos.setLastUpdated(lastUpdated);
         todosDto.getTodoItems().forEach(todoItemDTO -> {
@@ -122,7 +122,15 @@ public class TodosServiceImpl implements TodosService {
 
     @Override
     public List<TodoTitleDto> fetchTodoTitles(String username, int recordNumber, int recordCount) {
-        Pageable pageable = PageRequest.of(recordNumber, recordCount, Sort.by(Sort.Direction.DESC, "lastUpdated"));
+        int pageNumber;
+        try {
+            pageNumber = recordNumber / recordCount;
+        } catch(NumberFormatException e) {
+            throw new BadParameterException("Invalid request received");
+        }
+        Pageable pageable =
+                PageRequest.of(pageNumber, recordCount,
+                        Sort.by(Sort.Direction.DESC, "lastUpdated"));
         List<Object[]> titles = todosRepository.fetchNoteIdAndTitles(username, pageable);
         List<TodoTitleDto> todoTitles = new ArrayList<>();
         titles.forEach(object -> {
@@ -130,4 +138,27 @@ public class TodosServiceImpl implements TodosService {
         });
         return todoTitles;
     }
+
+    @Override
+    public TodosDTO fetchById(String todoId, String username) {
+        Todos todos = todosRepository.findByTodoIdAndUsername(todoId, username);
+        if (todos == null) {
+            throw new NotFoundException("No todo found with the id "+todoId);
+        }
+        List<TodoItemDTO> todoItemsList = new ArrayList<>();
+        todos.getTodoItems().forEach(todoItem -> {
+            TodoItemDTO todoItemDTO = new TodoItemDTO(
+                    todoItem.getTodoIndex(),
+                    todoItem.getTodoItem(),
+                    todoItem.isStrike());
+            todoItemsList.add(todoItemDTO);
+        });
+
+        return new TodosDTO(
+                todos.getTodoId(), todos.getTodoTitle(),
+                todos.getUsername(), todos.getLastUpdated(),
+                todoItemsList
+        );
+    }
+
 }

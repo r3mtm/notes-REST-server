@@ -3,10 +3,7 @@ package me.remil.notes.service.notes;
 import me.remil.notes.dao.NotesRepository;
 import me.remil.notes.dto.send.NoteTitles;
 import me.remil.notes.entity.Notes;
-import me.remil.notes.exception.IdAlreadyExistsException;
-import me.remil.notes.exception.MissingItemException;
-import me.remil.notes.exception.NotFoundException;
-import me.remil.notes.exception.UnauthorizedRequestException;
+import me.remil.notes.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +26,13 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     public List<NoteTitles> fetchNoteTitles(String username, int titleNumber, int titleCount) {
-        Pageable pageable = PageRequest.of(titleNumber, titleCount, Sort.by(Sort.Direction.DESC, "lastUpdated"));
+        int pageNumber;
+        try {
+            pageNumber = titleNumber / titleCount;
+        } catch(NumberFormatException e) {
+            throw new BadParameterException("Invalid request received");
+        }
+        Pageable pageable = PageRequest.of(pageNumber, titleCount, Sort.by(Sort.Direction.DESC, "lastUpdated"));
         List<Object[]> titles = notesRepository.fetchAllTitleAndIdByUserId(username, pageable);
         List<NoteTitles> noteTitles = new ArrayList<>();
 

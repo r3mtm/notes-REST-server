@@ -13,7 +13,7 @@ public class Todos {
     private String todoId;
 
     @Column(name = "todo_title", nullable = false)
-    private String title;
+    private String todoTitle;
 
     @Column(name = "user_id", nullable = false)
     private String username;
@@ -27,9 +27,9 @@ public class Todos {
     public Todos() {
     }
 
-    public Todos(String todoId, String title, String username, Timestamp lastUpdated, List<TodoItem> todoItems) {
+    public Todos(String todoId, String todoTitle, String username, Timestamp lastUpdated, List<TodoItem> todoItems) {
         this.todoId = todoId;
-        this.title = title;
+        this.todoTitle = todoTitle;
         this.username = username;
         this.lastUpdated = lastUpdated;
         this.todoItems = todoItems;
@@ -53,12 +53,12 @@ public class Todos {
         this.todoId = todoId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTodoTitle() {
+        return todoTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTodoTitle(String title) {
+        this.todoTitle = title;
     }
 
     public String getUsername() {
@@ -89,7 +89,7 @@ public class Todos {
     public String toString() {
         return "Todos{" +
                 "todoId='" + todoId + '\'' +
-                ", title='" + title + '\'' +
+                ", title='" + todoTitle + '\'' +
                 ", userId='" + username + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
                 ", todoItems=" + todoItems +
