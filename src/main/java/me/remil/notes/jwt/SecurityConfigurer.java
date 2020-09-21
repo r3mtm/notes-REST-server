@@ -46,14 +46,15 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable()
-			.authorizeRequests().antMatchers("/api/authenticate/**").permitAll().
+		httpSecurity
+				.csrf().disable()
+				.authorizeRequests().antMatchers("/api/authenticate/**").permitAll().
 			
-			anyRequest().authenticated().and().
+				anyRequest().authenticated().and().
 			
-			exceptionHandling().authenticationEntryPoint(JwtAuthenticationEntryPoint).and().sessionManagement()
+				exceptionHandling().authenticationEntryPoint(JwtAuthenticationEntryPoint).and().sessionManagement()
 			
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.	sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		httpSecurity.cors(); // To allow CORS preflight requests.
 		

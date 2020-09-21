@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"}, allowCredentials = "true")
+//@CrossOrigin
 @RequestMapping("/api")
 public class TodosController {
 
@@ -26,8 +26,8 @@ public class TodosController {
     }
 
     @PostMapping("/todos")
-    public void saveTodo(@RequestHeader("Authorization") String token, @RequestBody TodosDTO todos) {
-        token = token.substring(7);
+    public void saveTodo(@RequestHeader("cookie") String token, @RequestBody TodosDTO todos) {
+        token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.SAVE);
     }
@@ -35,10 +35,10 @@ public class TodosController {
     @GetMapping("/todos/page/{record}/{count}")
     public List<TodoTitleDto> fetchTodoTitles(@PathVariable String record,
                                               @PathVariable String count,
-                                              @RequestHeader("Authorization")
+                                              @RequestHeader("cookie")
                                               String token
                                               ) {
-        token = token.substring(7);
+        token = token.substring(6);
         int recordNumber, recordCount;
         try {
             recordNumber = Integer.parseInt(record);
@@ -52,22 +52,22 @@ public class TodosController {
     }
 
     @GetMapping("/todos/{todoId}")
-    public TodosDTO fetchById(@RequestHeader("Authorization")String token, @PathVariable String todoId) {
-        token = token.substring(7);
+    public TodosDTO fetchById(@RequestHeader("cookie") String token, @PathVariable String todoId) {
+        token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         return todosService.fetchById(todoId, username);
     }
 
     @PutMapping("/todos")
-    public void updateTodo(@RequestHeader("Authorization") String token, @RequestBody TodosDTO todos) {
-        token = token.substring(7);
+    public void updateTodo(@RequestHeader("cookie") String token, @RequestBody TodosDTO todos) {
+        token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.UPDATE);
     }
 
     @DeleteMapping("/todos/{todoId}")
-    public void deleteTodoById(@RequestHeader("Authorization") String token, @PathVariable String todoId) {
-        token = token.substring(7);
+    public void deleteTodoById(@RequestHeader("cookie") String token, @PathVariable String todoId) {
+        token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.deleteTodo(todoId, username);
     }

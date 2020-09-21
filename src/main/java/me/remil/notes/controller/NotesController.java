@@ -21,8 +21,7 @@ import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
 
 @RestController
-//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"})
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"}, allowCredentials = "true")
 @RequestMapping("/api")
 public class NotesController {
 
@@ -38,9 +37,9 @@ public class NotesController {
 	@GetMapping("/notes/page/{record}/{count}")
 	public List<NoteTitles> fetchNoteTitles(@PathVariable String record,
 											@PathVariable String count,
-											@RequestHeader("Authorization")
+											@RequestHeader("cookie")
 														String token) {
-		token = token.substring(7);
+		token = token.substring(6);
 		int recordNumber, recordCount;
 		try {
 			recordNumber = Integer.parseInt(record);
@@ -53,29 +52,30 @@ public class NotesController {
 	}
 	
 	@GetMapping("/notes/{id}")
-	public Notes fetchById(@RequestHeader("Authorization") String token, @PathVariable String id) {
-		token = token.substring(7);
+	public Notes fetchById(@RequestHeader("cookie") String token,
+						   @PathVariable String id) {
+		token = token.substring(6);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		return notesService.fetchNoteById(id, username);
 	}
 
 	@PostMapping("/notes")
-	public void saveNote(@RequestHeader("Authorization") String token, @RequestBody Notes note) {
-		token = token.substring(7);
+	public void saveNote(@RequestHeader("cookie") String token, @RequestBody Notes note) {
+		token = token.substring(6);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		notesService.validateBeforeSaveOrUpdate(note, username, NotesService.ACTIONS.SAVE);
 	}
 
 	@PutMapping("/notes")
-	public void updateNote(@RequestHeader("Authorization") String token, @RequestBody Notes note) {
-		token = token.substring(7);
+	public void updateNote(@RequestHeader("cookie") String token, @RequestBody Notes note) {
+		token = token.substring(6);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		notesService.validateBeforeSaveOrUpdate(note, username, NotesService.ACTIONS.UPDATE);
 	}
 
 	@DeleteMapping("/notes/{id}")
-	public void deleteNote(@RequestHeader("Authorization") String token, @PathVariable String id) {
-		token = token.substring(7);
+	public void deleteNote(@RequestHeader("cookie") String token, @PathVariable String id) {
+		token = token.substring(6);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		notesService.deleteNote(id, username);
 	}
