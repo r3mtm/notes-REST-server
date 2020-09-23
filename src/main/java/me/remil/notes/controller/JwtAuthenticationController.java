@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-//import me.remil.notes.jwt.dao.UserDAO;
+//import me.remil.notes.dao.UserRepository;
 import me.remil.notes.jwt.util.JwtRequest;
 import me.remil.notes.jwt.util.JwtResponse;
 import me.remil.notes.jwt.util.JwtTokenUtil;
