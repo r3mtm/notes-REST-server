@@ -3,6 +3,7 @@ package me.remil.notes.controller;
 import java.util.Map;
 import java.util.Objects;
 
+import me.remil.notes.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class JwtAuthenticationController {
 	private AuthenticationManager authenticationManager;
 	private JwtTokenUtil jwtTokenUtil;
 	private UserDetailsService userDetailsService;
+	private UserService userService;
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletResponse response) throws Exception {
@@ -47,7 +49,8 @@ public class JwtAuthenticationController {
 		response.addCookie(cookie);
 		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
-		return ResponseEntity.ok(new JwtResponse(token, expiresOn, authenticationRequest.getUsername()));
+		String secretKey = userService.fetchSecretKey(authenticationRequest.getUsername());
+		return ResponseEntity.ok(new JwtResponse(token, expiresOn, authenticationRequest.getUsername(), secretKey));
 	}
 	
 	private void authenticate(String username, String password) throws Exception {
@@ -78,5 +81,10 @@ public class JwtAuthenticationController {
 	@Qualifier("jwtUserDetailsService")
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
+	}
+
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 }

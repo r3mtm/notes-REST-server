@@ -5,4 +5,5 @@ import me.remil.notes.dto.receive.UserDto;
 public interface UserService {
     boolean checkUsernameExists(String username);
     void createUser(UserDto userDto);
+    String fetchSecretKey(String username);
 }

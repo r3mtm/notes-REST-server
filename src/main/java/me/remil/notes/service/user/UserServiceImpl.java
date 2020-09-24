@@ -52,4 +52,9 @@ public class UserServiceImpl implements UserService{
 
         userRepository.save(user);
     }
+
+    @Override
+    public String fetchSecretKey(String username) {
+        return userRepository.fetchSecretKeyByUsername(username);
+    }
 }
