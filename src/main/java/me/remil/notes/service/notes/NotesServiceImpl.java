@@ -6,9 +6,7 @@ import me.remil.notes.entity.Notes;
 import me.remil.notes.exception.*;
 import me.remil.notes.service.OffsetBasedPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

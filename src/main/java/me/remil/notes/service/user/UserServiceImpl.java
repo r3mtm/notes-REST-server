@@ -2,11 +2,15 @@ package me.remil.notes.service.user;
 
 import me.remil.notes.dao.UserRepository;
 import me.remil.notes.dto.receive.UserDto;
+import me.remil.notes.entity.SessionKey;
 import me.remil.notes.entity.Users;
 import me.remil.notes.exception.IdAlreadyExistsException;
 import me.remil.notes.exception.MissingItemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -45,7 +49,7 @@ public class UserServiceImpl implements UserService{
         }
 
         Users user = new Users(
-                userDto.getUsername(),
+                userDto.getUsername().toLowerCase(),
                 userDto.getPassword(),
                 userDto.getSecretKey(),
                 userDto.getCreationTimestamp());

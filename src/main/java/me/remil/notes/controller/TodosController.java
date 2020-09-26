@@ -1,6 +1,6 @@
 package me.remil.notes.controller;
 
-import me.remil.notes.dto.receive.TodosDTO;
+import me.remil.notes.dto.receive.TodosDto;
 import me.remil.notes.dto.send.TodoTitleDto;
 import me.remil.notes.exception.BadParameterException;
 import me.remil.notes.jwt.util.JwtTokenUtil;
@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.199:3000"}, allowCredentials = "true")
-//@CrossOrigin
 @RequestMapping("/api")
 public class TodosController {
 
@@ -26,7 +25,7 @@ public class TodosController {
     }
 
     @PostMapping("/todos")
-    public void saveTodo(@RequestHeader("cookie") String token, @RequestBody TodosDTO todos) {
+    public void saveTodo(@RequestHeader("cookie") String token, @RequestBody TodosDto todos) {
         token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.SAVE);
@@ -52,14 +51,14 @@ public class TodosController {
     }
 
     @GetMapping("/todos/{todoId}")
-    public TodosDTO fetchById(@RequestHeader("cookie") String token, @PathVariable String todoId) {
+    public TodosDto fetchById(@RequestHeader("cookie") String token, @PathVariable String todoId) {
         token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         return todosService.fetchById(todoId, username);
     }
 
     @PutMapping("/todos")
-    public void updateTodo(@RequestHeader("cookie") String token, @RequestBody TodosDTO todos) {
+    public void updateTodo(@RequestHeader("cookie") String token, @RequestBody TodosDto todos) {
         token = token.substring(6);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         todosService.validateBeforeSaveOrUpdate(todos, username, TodosService.ACTIONS.UPDATE);

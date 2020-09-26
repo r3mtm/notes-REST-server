@@ -1,14 +1,14 @@
 package me.remil.notes.dto.receive;
 
-public class TodoItemDTO {
+public class TodoItemDto {
     private int todoIndex;
     private String todoItem;
     private boolean strike;
 
-    public TodoItemDTO() {
+    public TodoItemDto() {
     }
 
-    public TodoItemDTO(int todoIndex, String todoItem, boolean strike) {
+    public TodoItemDto(int todoIndex, String todoItem, boolean strike) {
         this.todoIndex = todoIndex;
         this.todoItem = todoItem;
         this.strike = strike;
@@ -40,7 +40,7 @@ public class TodoItemDTO {
 
     @Override
     public String toString() {
-        return "TodoItemDTO{" +
+        return "TodoItemDto{" +
                 "todoIndex=" + todoIndex +
                 ", todoItem='" + todoItem + '\'' +
                 ", strike=" + strike +

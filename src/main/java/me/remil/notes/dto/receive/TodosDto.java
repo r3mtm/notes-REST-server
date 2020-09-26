@@ -3,14 +3,14 @@ package me.remil.notes.dto.receive;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class TodosDTO {
+public class TodosDto {
     private String todoId;
     private String todoTitle;
     private String username;
     private Timestamp lastUpdated;
-    private List<TodoItemDTO> todoItems;
+    private List<TodoItemDto> todoItems;
 
-    public TodosDTO(String todoId, String todoTitle, String username, Timestamp lastUpdated, List<TodoItemDTO> todoItems) {
+    public TodosDto(String todoId, String todoTitle, String username, Timestamp lastUpdated, List<TodoItemDto> todoItems) {
         this.todoId = todoId;
         this.todoTitle = todoTitle;
         this.username = username;
@@ -50,17 +50,17 @@ public class TodosDTO {
         this.lastUpdated = lastUpdated;
     }
 
-    public List<TodoItemDTO> getTodoItems() {
+    public List<TodoItemDto> getTodoItems() {
         return todoItems;
     }
 
-    public void setTodoItems(List<TodoItemDTO> todoItems) {
+    public void setTodoItems(List<TodoItemDto> todoItems) {
         this.todoItems = todoItems;
     }
 
     @Override
     public String toString() {
-        return "TodosDTO{" +
+        return "TodosDto{" +
                 "todoId='" + todoId + '\'' +
                 ", todoTitle='" + todoTitle + '\'' +
                 ", username='" + username + '\'' +

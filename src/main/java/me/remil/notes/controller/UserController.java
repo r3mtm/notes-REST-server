@@ -2,10 +2,13 @@ package me.remil.notes.controller;
 
 import me.remil.notes.dto.receive.UserDto;
 import me.remil.notes.exception.BadParameterException;
+import me.remil.notes.exception.UnauthorizedRequestException;
+import me.remil.notes.jwt.util.JwtTokenUtil;
 import me.remil.notes.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -14,6 +17,7 @@ import java.util.Map;
 public class UserController {
 
     final private UserService userService;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public UserController(UserService userService) {
@@ -32,5 +36,10 @@ public class UserController {
     @PostMapping("/create-account")
     public void createAccount(@RequestBody UserDto user) {
         userService.createUser(user);
+    }
+
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 }

@@ -1,17 +1,15 @@
 package me.remil.notes.service.todos;
 
 import me.remil.notes.dao.TodosRepository;
-import me.remil.notes.dto.receive.TodosDTO;
-import me.remil.notes.dto.receive.TodoItemDTO;
+import me.remil.notes.dto.receive.TodoItemDto;
+import me.remil.notes.dto.receive.TodosDto;
 import me.remil.notes.dto.send.TodoTitleDto;
 import me.remil.notes.entity.TodoItem;
 import me.remil.notes.entity.Todos;
 import me.remil.notes.exception.*;
 import me.remil.notes.service.OffsetBasedPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -61,12 +59,12 @@ public class TodosServiceImpl implements TodosService {
     }
 
     @Override
-    public void validateBeforeSaveOrUpdate(TodosDTO todosDto, String usernameFromToken, ACTIONS type) {
+    public void validateBeforeSaveOrUpdate(TodosDto todosDto, String usernameFromToken, ACTIONS type) {
         String todoId = todosDto.getTodoId();
         String title = todosDto.getTodoTitle();
         String username = todosDto.getUsername();
         Timestamp lastUpdated = todosDto.getLastUpdated();
-        List<TodoItemDTO> todoItems = todosDto.getTodoItems();
+        List<TodoItemDto> todoItems = todosDto.getTodoItems();
 
         if (username == null) {
             throw new MissingItemException("Username missing in request");
@@ -93,12 +91,12 @@ public class TodosServiceImpl implements TodosService {
         todos.setTodoTitle(title);
         todos.setUsername(username);
         todos.setLastUpdated(lastUpdated);
-        todosDto.getTodoItems().forEach(todoItemDTO -> {
-            checkIndex.add(todoItemDTO.getTodoIndex());
-            if (todoItemDTO.getTodoItem() == null) {
+        todosDto.getTodoItems().forEach(todoItemDto -> {
+            checkIndex.add(todoItemDto.getTodoIndex());
+            if (todoItemDto.getTodoItem() == null) {
                 throw new MissingItemException("Missing essential fields in todo item");
             }
-            TodoItem todoItem = new TodoItem(todoId, todoItemDTO.getTodoIndex(), todoItemDTO.getTodoItem(), todoItemDTO.isStrike(), todos);
+            TodoItem todoItem = new TodoItem(todoId, todoItemDto.getTodoIndex(), todoItemDto.getTodoItem(), todoItemDto.isStrike(), todos);
             todos.addTodoItems(todoItem);
         });
 
@@ -133,21 +131,21 @@ public class TodosServiceImpl implements TodosService {
     }
 
     @Override
-    public TodosDTO fetchById(String todoId, String username) {
+    public TodosDto fetchById(String todoId, String username) {
         Todos todos = todosRepository.findByTodoIdAndUsername(todoId, username);
         if (todos == null) {
             throw new NotFoundException("No todo found with the id "+todoId);
         }
-        List<TodoItemDTO> todoItemsList = new ArrayList<>();
+        List<TodoItemDto> todoItemsList = new ArrayList<>();
         todos.getTodoItems().forEach(todoItem -> {
-            TodoItemDTO todoItemDTO = new TodoItemDTO(
+            TodoItemDto todoItemDTO = new TodoItemDto(
                     todoItem.getTodoIndex(),
                     todoItem.getTodoItem(),
                     todoItem.isStrike());
             todoItemsList.add(todoItemDTO);
         });
 
-        return new TodosDTO(
+        return new TodosDto(
                 todos.getTodoId(), todos.getTodoTitle(),
                 todos.getUsername(), todos.getLastUpdated(),
                 todoItemsList

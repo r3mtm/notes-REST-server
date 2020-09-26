@@ -58,7 +58,7 @@ public class RestExceptionHandler {
 		ErrorResponse errorResponse = new ErrorResponse();
 		
 		errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-		errorResponse.setMessage("Session Expired! Login again");
+		errorResponse.setMessage("SessionKey Expired! Login again");
 		errorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}

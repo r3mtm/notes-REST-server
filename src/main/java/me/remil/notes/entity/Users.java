@@ -2,8 +2,6 @@ package me.remil.notes.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -13,7 +11,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class Users {
 	@Id
-	private String id = UUID.randomUUID().toString();
+	private final String id = UUID.randomUUID().toString();
 	
 	@Column
 	private String username;

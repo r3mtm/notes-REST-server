@@ -1,6 +1,6 @@
 package me.remil.notes.service.todos;
 
-import me.remil.notes.dto.receive.TodosDTO;
+import me.remil.notes.dto.receive.TodosDto;
 import me.remil.notes.dto.send.TodoTitleDto;
 import me.remil.notes.entity.Todos;
 
@@ -15,9 +15,9 @@ public interface TodosService {
 
     void deleteTodo(String todoId, String usernameFromToken);
 
-    void validateBeforeSaveOrUpdate(TodosDTO todosDTO, String usernameFromToken, ACTIONS type);
+    void validateBeforeSaveOrUpdate(TodosDto todosDTO, String usernameFromToken, ACTIONS type);
 
     List<TodoTitleDto> fetchTodoTitles(String username, int recordNumber, int recordCount);
 
-    TodosDTO fetchById(String noteId, String username);
+    TodosDto fetchById(String noteId, String username);
 }
